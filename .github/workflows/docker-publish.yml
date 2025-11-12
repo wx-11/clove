@@ -23,6 +23,11 @@ jobs:
       security-events: write
 
     steps:
+      - name: Cancel previous runs
+        uses: styfle/cancel-workflow-action@0.12.1
+        with:
+          access_token: ${{ github.token }}
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -62,6 +67,8 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           no-cache: true
+          build-args: |
+            CACHEBUST=${{ github.sha }}
 
       - name: Run security scan
         if: github.event_name != 'pull_request'

@@ -4,6 +4,10 @@
 # Stage 1: Build frontend
 FROM node:20-alpine AS frontend-builder
 
+# Cache buster to force rebuild
+ARG CACHEBUST=1
+RUN echo "Cache bust: $CACHEBUST"
+
 # Set timezone
 ENV TZ=Asia/Shanghai
 RUN apk add --no-cache tzdata
