@@ -11,7 +11,10 @@ services:
       - "5201:5201"
     volumes:
       - ./data:/data
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     environment:
+      - TZ=Asia/Shanghai
       # Server configuration
       - HOST=0.0.0.0
       - PORT=5201
