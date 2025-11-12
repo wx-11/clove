@@ -54,6 +54,17 @@ class ClaudeWebProcessor(BaseProcessor):
                 session_id
             )
 
+        # Check if account prefers OAuth mode, skip Web if so
+        if (
+            context.claude_session
+            and context.claude_session.account
+            and context.claude_session.account.prefer_mode == "oauth"
+        ):
+            logger.warning(
+                f"Account {context.claude_session.account.organization_uuid[:8]}... "
+                "prefers OAuth mode but OAuth failed, using web as fallback"
+            )
+
         # Step 2: Build ClaudeWebRequest
         if not context.claude_web_request:
             request = context.messages_api_request
@@ -132,5 +143,8 @@ class ClaudeWebProcessor(BaseProcessor):
         context.original_stream = await context.claude_session.send_message(
             request_dict
         )
+
+        # Mark as web mode
+        context.metadata["clove_mode"] = "web"
 
         return context

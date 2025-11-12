@@ -59,6 +59,7 @@ class Account:
         cookie_value: Optional[str] = None,
         oauth_token: Optional[OAuthToken] = None,
         auth_type: AuthType = AuthType.COOKIE_ONLY,
+        prefer_mode: Optional[str] = None,
     ):
         self.organization_uuid = organization_uuid
         self.capabilities = capabilities
@@ -68,6 +69,7 @@ class Account:
         self.last_used = datetime.now()
         self.resets_at: Optional[datetime] = None
         self.oauth_token: Optional[OAuthToken] = oauth_token
+        self.prefer_mode = prefer_mode  # 'oauth', 'web', or None for auto
 
     def __enter__(self) -> "Account":
         """Enter the context manager."""
@@ -122,6 +124,7 @@ class Account:
             "last_used": self.last_used.isoformat(),
             "resets_at": self.resets_at.isoformat() if self.resets_at else None,
             "oauth_token": self.oauth_token.to_dict() if self.oauth_token else None,
+            "prefer_mode": self.prefer_mode,
         }
 
     @classmethod
@@ -132,6 +135,7 @@ class Account:
             capabilities=data.get("capabilities"),
             cookie_value=data.get("cookie_value"),
             auth_type=AuthType(data["auth_type"]),
+            prefer_mode=data.get("prefer_mode"),
         )
         account.status = AccountStatus(data["status"])
         account.last_used = datetime.fromisoformat(data["last_used"])

@@ -49,14 +49,20 @@ class StreamingResponseProcessor(BaseProcessor):
 
         sse_stream = self.serializer.serialize_stream(context.event_stream)
 
+        headers = {
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no",  # Disable nginx buffering
+        }
+
+        # Add clove mode header if available
+        if "clove_mode" in context.metadata:
+            headers["X-Clove-Mode"] = context.metadata["clove_mode"]
+
         context.response = StreamingResponse(
             sse_stream,
             media_type="text/event-stream",
-            headers={
-                "Cache-Control": "no-cache",
-                "Connection": "keep-alive",
-                "X-Accel-Buffering": "no",  # Disable nginx buffering
-            },
+            headers=headers,
         )
 
         return context

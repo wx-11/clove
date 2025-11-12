@@ -52,12 +52,18 @@ class NonStreamingResponseProcessor(BaseProcessor):
             logger.error("No message collected after consuming stream")
             raise NoMessageError()
 
+        headers = {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-cache",
+        }
+
+        # Add clove mode header if available
+        if "clove_mode" in context.metadata:
+            headers["X-Clove-Mode"] = context.metadata["clove_mode"]
+
         context.response = JSONResponse(
             content=context.collected_message.model_dump(exclude_none=True),
-            headers={
-                "Content-Type": "application/json",
-                "Cache-Control": "no-cache",
-            },
+            headers=headers,
         )
 
         return context

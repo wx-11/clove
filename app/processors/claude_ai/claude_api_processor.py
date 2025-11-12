@@ -88,6 +88,11 @@ class ClaudeAPIProcessor(BaseProcessor):
                     else None
                 )
 
+            # Check if account prefers web mode, skip OAuth if so
+            if account and account.prefer_mode == "web":
+                logger.info(f"Account {account.organization_uuid[:8]}... prefers web mode, skipping OAuth")
+                return context
+
             with account:
                 if (context.messages_api_request.tool_choice and context.messages_api_request.tool_choice.type == "tool" and not context.messages_api_request.tool_choice.name):
                     logger.warning("Fixing invalid tool_choice: type 'tool' but name is null/empty. Changing to type='any'")
@@ -181,8 +186,9 @@ class ClaudeAPIProcessor(BaseProcessor):
                     headers=filtered_headers,
                 )
 
-                # Stop pipeline on success
+                # Mark as OAuth mode and stop pipeline on success
                 context.metadata["stop_pipeline"] = True
+                context.metadata["clove_mode"] = "oauth"
                 logger.info("Successfully processed request via Claude API")
 
                 # Store checkpoints in cache service after successful request

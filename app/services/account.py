@@ -51,6 +51,7 @@ class AccountManager:
         oauth_token: Optional[OAuthToken] = None,
         organization_uuid: Optional[str] = None,
         capabilities: Optional[List[str]] = None,
+        prefer_mode: Optional[str] = None,
     ) -> Account:
         """Add a new account to the manager.
 
@@ -105,6 +106,7 @@ class AccountManager:
             cookie_value=cookie_value,
             oauth_token=oauth_token,
             auth_type=auth_type,
+            prefer_mode=prefer_mode,
         )
         self._accounts[organization_uuid] = account
         self.save_accounts()
