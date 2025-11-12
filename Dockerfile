@@ -5,9 +5,7 @@ FROM node:20-alpine AS frontend-builder
 
 # Set timezone
 ENV TZ=Asia/Shanghai
-RUN apk add --no-cache tzdata && \
-    ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-    echo "Asia/Shanghai" > /etc/timezone
+RUN apk add --no-cache tzdata
 
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@latest --activate
