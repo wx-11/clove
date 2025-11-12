@@ -26,6 +26,14 @@ COPY front/index.html ./
 # Copy source code
 COPY front/src ./src
 
+# Debug: List files to verify copy
+RUN echo "=== Checking copied files ===" && \
+    ls -la . && \
+    echo "=== Checking src directory ===" && \
+    ls -la src/ && \
+    echo "=== Checking src/lib directory ===" && \
+    ls -la src/lib/ || echo "src/lib not found"
+
 # Build frontend
 RUN pnpm run build
 
