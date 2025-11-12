@@ -12,15 +12,19 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app/front
 
-# Copy frontend configuration files first
-COPY front/tsconfig*.json front/vite.config.ts front/package.json front/pnpm-lock.yaml ./
+# Copy package files first for better caching
+COPY front/package.json front/pnpm-lock.yaml ./
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Copy frontend source (src directory and other files)
+# Copy all configuration files
+COPY front/tsconfig.json front/tsconfig.app.json front/tsconfig.node.json ./
+COPY front/vite.config.ts front/eslint.config.js front/components.json ./
+COPY front/index.html ./
+
+# Copy source code
 COPY front/src ./src
-COPY front/index.html front/eslint.config.js front/components.json ./
 
 # Build frontend
 RUN pnpm run build
