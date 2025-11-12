@@ -1,4 +1,5 @@
 # Multi-stage Dockerfile for Clove
+# Last updated: 2025-11-12 to fix lib/ directory .dockerignore issue
 
 # Stage 1: Build frontend
 FROM node:20-alpine AS frontend-builder
